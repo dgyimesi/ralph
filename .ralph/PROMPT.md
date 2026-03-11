@@ -7,12 +7,13 @@ You are an autonomous coding agent working on a software project.
 3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
 4. Pick the **highest priority** user story where `passes: false`
 5. Implement that single user story
-6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
-7. Read and follow instrictions in AGENTS.md. Update AGENTS.md if you discover reusable patterns (see below)
-8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
-9. Update the PRD to set `passes: true` for the completed story
-10. Append your progress to `progress.txt`
-11. Document your work. Look for docs/ folder or README.md for patterns. If none create docs/ and document your patterns there.
+6. Ensure proper test coverage (e.g. unit tests, integration tests, e2e tests - always make sure acceptance criterias in tasks have proper coverage)
+7. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
+8. Read and follow instrictions in AGENTS.md. Update AGENTS.md if you discover reusable patterns (see below)
+9. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+10. Update the PRD to set `passes: true` for the completed story
+11. Append your progress to `progress.txt`
+12. Document your work. Look for docs/ folder or README.md for patterns. If none create docs/ and document your patterns there.
 
 ## Progress Report Format
 
