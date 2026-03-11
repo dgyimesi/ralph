@@ -1,4 +1,4 @@
-# RALPH: The Concentric Core of Agentic Workflows
+# Ralph
 
 > "Complex systems are built from simple ones, not the other way around. Precision in intent engineering correlates directly to precision in execution."
 
@@ -44,21 +44,21 @@ The Ralph Loop is a three-phase engineering lifecycle designed to maintain high-
 
 Use these exact prompting patterns to drive the agent through the concentric engineering layers.
 
+Each and every phase starts with the same prompt:
+
+> **Prompt:** *"Study .ralph/"*
+
 ### Phase 1: Intent Engineering (The "Why")
 **Goal:** Build the Strategic Narrative and identify the business KPIs.
-> **Prompt:** *"I want to bootstrap a project for Nutanix VDI optimization. The primary drivers are cost-optimization via automated curfews and improving user experience for StoreFront stability. Erik Harold (Director) is our stakeholder. We are migrating from VMware to Nutanix, and eventually to Azure. Socratic interview me to build the NARRATIVE.md."*
+> **Prompt:** *"Let's bootstrap a project for Nutanix-hosted Citrix VDI infrastructure optimization. The primary drivers are cost-optimization via automated curfews and improving user experience for StoreFront stability. We are migrating from VMware to Nutanix, and eventually to Azure. I'm the PO/Solution Architect of this project. Let's plan, design, discover and implement this capability. Interview me."*
 
 ### Phase 2: Requirements Engineering (The "What")
 **Goal:** Deconstruct the Narrative into Atomic Functional and Non-Functional Requirements.
-> **Prompt:** *"Based on our NARRATIVE.md, deconstruct the requirements into REQUIREMENTS.md. We need a 1-hour idle curfew logic, Geo 9-to-5 regional awareness, and a UUID diagnostic bridge for ServiceNow. Ensure every requirement is an 'Atom'—simple, immutable, and measurable."*
+> **Prompt:** *"Based our narrative let's build requirements. We need a 1-hour idle curfew logic, Geo 9-to-5 regional awareness, and a UUID diagnostic bridge for ServiceNow."*
 
-### Phase 3: Agentic Execution (The "How")
-**Goal:** Translate Requirements into a granular, phased roadmap with Structural Fidelity.
-> **Prompt:** *"Generate the prd.json based on REQUIREMENTS.md. You MUST strictly mirror the schema and structural fidelity of prd.example.json. Use numeric priorities, separate concerns with prefixes (SEC-, NTNX-, CTX-), and ensure every task is small enough to be verifiable by a focused set of tests."*
-
-### Phase 4: Implementation & The Loop
+### Phase 3: Implementation & The Loop
 **Goal:** Execute the tasks while continuously refining the requirement "Atoms."
-> **Prompt:** *"Read prd.json and pick up Task SEC-001. Before you start, check if any new 'Atoms' are discovered during implementation (e.g., API rate limits or specific log schemas). If so, update REQUIREMENTS.md immediately as per the Ralph Loop protocol in PROMPT.md."*
+> **Prompt:** *"Study .ralph/"*
 
 ---
 
