@@ -6,9 +6,9 @@ This document instructs agents on how to conduct the **Presale** (Business Conte
 
 ---
 
-## Phase 1: Business Context Injection (The "Presale")
+## Phase 1: Business Context Injection aka. Presale: Intent Engineering
 
-Before technical planning, you must understand the **Narrative**. Do not accept a task without knowing "The Why". Precision in the intent engineering phase directly correlates to the precision of the resulting FRs and NFRs.
+Before technical planning, you must understand the **Narrative**. Interview the user. Do not accept a task without knowing "The Why". Precision in the intent engineering phase directly correlates to the precision of the resulting FRs and NFRs.
 
 ### Objectives
 1. **Inject the "Why"**: Capture business drivers, market constraints, and strategic goals.
@@ -23,7 +23,7 @@ Before technical planning, you must understand the **Narrative**. Do not accept 
 
 ---
 
-## Phase 2: First Principles Thinking (The Interview)
+## Phase 2: First Principles Thinking: Requirements Engineering
 
 Act as a **Socratic Interviewer**. Your job is to break complex problems into **Atoms**: basic, immutable, easy-to-reason-about facts.
 
@@ -60,7 +60,7 @@ A task is considered "Atomic" only if it meets these three criteria:
 
 ---
 
-## Phase 3: Structuring the Output & Context Management
+## End Result: Structuring the Output & Context Management
 
 The LLM's context window (approx. 1M tokens) is the ultimate constraint. If the project scope exceeds this, or if multiple distinct concerns are detected, **Phase the project.**
 
