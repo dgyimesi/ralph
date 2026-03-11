@@ -1,0 +1,170 @@
+{
+  "project_name": "Nutanix VDI Agentic Optimization",
+  "branchName": "feature/nutanix-agent-mvp",
+  "objective": "Implement a multi-agent orchestration (Auditor, Investigator, Executioner) to optimize Nutanix-based VDI resources via log correlation and automated curfewing. Detailed intent in .ralph/NARRATIVE.md and atomic requirements in .ralph/REQUIREMENTS.md.",
+  "target_architecture": {
+    "orchestration": "Multi-agent system using Claude-Code or Bedrock.",
+    "hypervisor": "Nutanix Prism V3 API (Intent-based).",
+    "observability": "Citrix DDC OData API, StoreFront Logs, and ServiceNow Ticket API.",
+    "identity": "Dedicated Service Account with Least Privilege."
+  },
+  "user_stories": [
+    {
+      "id": "SEC-001",
+      "title": "Service Account, Secrets Management & Full Audit Log Infrastructure",
+      "description": "Establish secure credential storage and a detailed audit logging framework capturing all agent decisions and API interactions.",
+      "acceptance_criteria": [
+        "Secure loading of Service Account credentials via .env (NFR-SEC-001).",
+        "Implement audit logging to capture internal decisions, full API requests/responses, and state transitions (FR-EXEC-002).",
+        "Implement 'Atomizer' logic to truncate findings to <280 characters for context efficiency (NFR-PERF-001).",
+        "Ensure no credentials or sensitive data are ever logged."
+      ],
+      "passes": false,
+      "priority": 1
+    },
+    {
+      "id": "NTNX-001",
+      "title": "Nutanix API: Connectivity & Spec-Version Handling",
+      "description": "Implement the base Prism V3 client with mandatory spec_version retrieval.",
+      "acceptance_criteria": [
+        "Implement NutanixClient class with basic auth support.",
+        "Implement get_vm() method to retrieve VM metadata and spec_version (NFR-NTNX-005).",
+        "Verify connectivity and successful metadata retrieval from a Prism endpoint."
+      ],
+      "passes": false,
+      "priority": 2
+    },
+    {
+      "id": "NTNX-002",
+      "title": "Nutanix API: Instance Power & Reset Actions",
+      "description": "Implement the atomic actions for Power Off, Restart, and Reset on Nutanix VMs.",
+      "acceptance_criteria": [
+        "Implement set_power_state() using the intentful PUT pattern with spec_version matching.",
+        "Implement ACPI/Guest shutdown and reboot actions via POST endpoints (FR-NTNX-003).",
+        "Integrate Whitelist check (FR-NTNX-005) to block actions on restricted instances."
+      ],
+      "passes": false,
+      "priority": 3
+    },
+    {
+      "id": "NTNX-003",
+      "title": "Nutanix API: Instance Whitelist Management",
+      "description": "Implement a persistent mechanism to exclude specific VDI instances from curfew/reset actions.",
+      "acceptance_criteria": [
+        "Create a persistent whitelist store (FR-NTNX-005).",
+        "Implement logic to check instance ID/Name against the whitelist.",
+        "Verify power actions are blocked and logged for whitelisted instances."
+      ],
+      "passes": false,
+      "priority": 4
+    },
+    {
+      "id": "EXEC-002",
+      "title": "Execution Control: Dry-Run Mode Implementation",
+      "description": "Implement a toggleable non-destructive mode for all agentic actions.",
+      "acceptance_criteria": [
+        "Implement a global DRY_RUN configuration flag (FR-EXEC-001).",
+        "When active, all 'Executioner' API writes must be intercepted and logged instead of executed.",
+        "Verify the audit log captures the intended 'Proposal' with the 'Dry Run' marker."
+      ],
+      "passes": false,
+      "priority": 5
+    },
+    {
+      "id": "CTX-001",
+      "title": "Citrix DDC: Session State Discovery",
+      "description": "Establish connectivity to the Citrix DDC OData/Broker API to track session duration.",
+      "acceptance_criteria": [
+        "Connect to the Citrix Broker Service OData API.",
+        "Filter and identify sessions with IdleDuration > 1 hour (FR-NTNX-001).",
+        "Verify correlation between Citrix Session and Nutanix VM ID."
+      ],
+      "passes": false,
+      "priority": 6
+    },
+    {
+      "id": "CTX-002",
+      "title": "Citrix StoreFront: Log Ingestion & UUID Extraction",
+      "description": "Implement log-tailing or ingestion for StoreFront to capture Error Trace UUIDs.",
+      "acceptance_criteria": [
+        "Identify and ingest StoreFront delivery logs.",
+        "Implement regex parser to extract the 'Error Trace UUID' from log entries (FR-LOGS-001).",
+        "Verify successful extraction from sample log datasets."
+      ],
+      "passes": false,
+      "priority": 7
+    },
+    {
+      "id": "SNOW-001",
+      "title": "ServiceNow: Ticket Parsing & Correlation",
+      "description": "Implement the Investigator's ability to extract UUIDs from ServiceNow ticket fields.",
+      "acceptance_criteria": [
+        "Connect to ServiceNow Table API and retrieve 'incident' records.",
+        "Extract UUIDs from ticket descriptions/comments.",
+        "Verify correlation between ServiceNow Incident and Citrix Log UUID."
+      ],
+      "passes": false,
+      "priority": 8
+    },
+    {
+      "id": "ID-001",
+      "title": "Identity Audit: AD & SailPoint Integration",
+      "description": "Verify if a user's failure is due to missing AD group memberships or SailPoint entitlements.",
+      "acceptance_criteria": [
+        "Implement AD/LDAP query for user group memberships.",
+        "Implement SailPoint Table API check for 'Requested' vs 'Granted' status (FR-NTNX-004).",
+        "Identify and flag 'Entitlement Desync' where the user is missing required access."
+      ],
+      "passes": false,
+      "priority": 9
+    },
+    {
+      "id": "EXEC-001",
+      "title": "Executioner: Safety-Valve Logic (10% Buffer)",
+      "description": "Throttle power actions to 10% of cluster capacity in a 15-min window.",
+      "acceptance_criteria": [
+        "Track pending and recent power actions in a stateful window.",
+        "Calculate and enforce the 10% safety threshold (NFR-REL-001).",
+        "Verify that actions exceeding the threshold are queued or rejected."
+      ],
+      "passes": false,
+      "priority": 10
+    },
+    {
+      "id": "AUDIT-001",
+      "title": "Auditor: Geo-Regional Usage & KPI Database",
+      "description": "Build the 7-day rolling window database for tracking regional trends and initiative KPIs.",
+      "acceptance_criteria": [
+        "Implement local persistent store for Geo-regional usage trends (FR-NTNX-002).",
+        "Identify 9-to-5 'Warm-up' windows for regional clusters.",
+        "Implement data collection for M-001 (Waste), M-002 (MTTR), M-004 (Density), and M-006 (Accuracy) as defined in NARRATIVE.md."
+      ],
+      "passes": false,
+      "priority": 11
+    },
+    {
+      "id": "AUDIT-002",
+      "title": "Auditor: Zombie & Orphan Detection",
+      "description": "Identify VMs 'On' in Nutanix but 'Unregistered' in Citrix Broker.",
+      "acceptance_criteria": [
+        "Perform state comparison between Nutanix Prism and Citrix Broker (FR-LOGS-002).",
+        "List and flag 'Zombies' (On/Unregistered) for remediation.",
+        "Verify detection accuracy with sample 'Unregistered' instances."
+      ],
+      "passes": false,
+      "priority": 12
+    },
+    {
+      "id": "DOC-001",
+      "title": "Reporting: Service Efficiency Summary",
+      "description": "Generate a structured representation of discovered connections and initiative performance.",
+      "acceptance_criteria": [
+        "Export dependency graph (User -> StoreFront -> DDC -> Nutanix).",
+        "Generate a performance summary including all KPIs (M-001, M-002, M-004, M-006).",
+        "Format output as structured JSON/Markdown."
+      ],
+      "passes": false,
+      "priority": 13
+    }
+  ]
+}
