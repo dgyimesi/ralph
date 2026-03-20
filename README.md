@@ -1,65 +1,271 @@
-# Ralph
+# Ralph - Autonomous Agent Loop Methodology
 
 > "Complex systems are built from simple ones, not the other way around. Precision in intent engineering correlates directly to precision in execution."
 
-This document defines the a blueprint project for my take on teh **Ralph Loop** methodology,  It serves as the foundational guide for both human architects and autonomous agents.
+Ralph is an autonomous agent methodology for software development that maintains high-fidelity context across iterations through file-based knowledge preservation.
 
 ---
 
-## 1. The Methodology: "The Ralph Loop"
+## 🚀 Two Execution Modes
 
-The Ralph Loop is a three-phase engineering lifecycle designed to maintain high-fidelity context across a 1M token window.
+Ralph supports two distinct execution patterns depending on your workflow:
+
+### 1. Interactive Mode (Human-in-the-Loop)
+**File:** `.ralph/CLAUDE.md`  
+**Use case:** Active development with human oversight and decision-making
+
+```bash
+# Provide CLAUDE.md as context to your AI assistant
+
+❯ study .ralph/CLAUDE.md
+
+# Agent responds similarly:
+
+● Three Operating Modes:
+  1. Discovery Mode - When no PRD exists, conduct two interview sessions:
+    - Business Context Injection → create docs/NARRATIVE.md
+    - Requirements Engineering → create docs/REQUIREMENTS.md
+    - Then generate .ralph/prd.json
+  2. Execution Mode - When PRD exists with incomplete tasks:
+    - Work on ONE story per iteration
+    - Read context files first (NARRATIVE, REQUIREMENTS, progress.txt, AGENTS.md)
+    - Implement, test, commit, document
+    - Update PRD and exit
+  3. Completion Mode - When all tasks pass → output <promise>COMPLETE</promise>
+
+  Core Principles:
+  - Atomic Requirements - Cannot be decomposed further without losing identity
+  - Intent Engineering - Every decision must serve business goals in NARRATIVE.md
+  - Quality First - All commits must pass typecheck/lint/test
+  - Documentation-Driven - Capture learnings in progress.txt and AGENTS.md
+  - One Story Per Iteration - Focus and thoroughness over speed
+
+  The Workflow Loop:
+  Read Context → Pick Story → Implement → Test → Commit → Document → Exit
+```
+
+### 2. Unattended Mode (AFK Execution)
+**File:** `.ralph/RALPH.md`  
+**Use case:** Autonomous execution of well-defined tasks without human intervention
+
+```bash
+# Run the autonomous loop
+.ralph/ralph.sh --tool claude [max_iterations]
+```
+
+**Characteristics:**
+- Agent picks ONE task, implements it, commits, and exits
+- Fresh context on each iteration (no context rot if tasks are atomic)
+- Continues until all tasks complete or max iterations reached
+- Context preserved in files (progress.txt, AGENTS.md, docs/)
+- Ideal for executing a well-defined backlog overnight or during meetings
+
+---
+
+## 🎯 Starting Fresh: Intent & Requirements Engineering
+
+Before Ralph can execute tasks, the project needs three foundational documents (see **[PRESALE.md](.ralph/PRESALE.md)**).
 
 ### Phase 1: Intent Engineering (The "Why")
-**Artifact:** `.ralph/NARRATIVE.md`
-- **Objective:** Inject the business narrative, strategic goals, and "system scars" into the agent's memory.
-- **Protocol:** Socratic interviewing to reach the fundamental business driver (The 5 Whys).
+**Output:** `docs/NARRATIVE.md`
 
-### Phase 2: First Principles Thinking (The "What")
-**Artifact:** `.ralph/REQUIREMENTS.md`
-- **Objective:** Deconstruct the narrative into **Atoms**: simple, immutable, non-decomposable facts.
-- **Protocol:** Every requirement must be measurable and atomic. FRs follow the `[Actor] shall [Action] so that [Value]` format.
+Capture the business context, strategic goals, and success metrics through structured interviews. 
 
-### Phase 3: Agentic Execution (The "How")
-**Artifact:** `.ralph/prd.json`
-- **Objective:** Translate Atoms into a phased technical roadmap with **Structural Fidelity**.
-- **Protocol:** Adhere to the **Atomic Task Rule**. Tasks must be small enough to be verifiable by a focused set of tests.
+**What it captures:**
+- Business drivers and strategic goals
+- Historical context and "system scars"
+- Key Performance Indicators (KPIs)
+- Success criteria and constraints
 
 ---
 
-## 2. The Artifact Stack
+### Phase 2: Requirements Engineering (The "What")  
+**Output:** `docs/REQUIREMENTS.md`
 
-| Artifact                 | Responsibility                | Purpose                                                        |
-| :----------------------- | :---------------------------- | :------------------------------------------------------------- |
-| `README.md`              | Master Manifesto              | High-level overview and methodology guide.                     |
-| `.ralph/PRESALE.md`      | Methodology Protocol          | Instructions for the Intent and Requirements phases.           |
-| `.ralph/PROMPT.md`       | Agent System Prompt           | Core operational instructions for task implementation.         |
-| `.ralph/NARRATIVE.md`    | (generated) Strategic Context | The business story and success metrics (KPIs).                 |
-| `.ralph/REQUIREMENTS.md` | (generated) Source of Truth   | The list of atomic functional and non-functional requirements. |
-| `.ralph/prd.json`        | (generated) Technical Roadmap | The granular, phased backlog for the Executioner agents.       |
+Deconstruct the narrative into atomic, measurable requirements.
 
----
+**Format:** `[Actor] shall [Action] so that [Value]`
 
-## 3. Prompting the Ralph Loop: Real-World Examples
-
-Use these exact prompting patterns to drive the agent through the concentric engineering layers.
-
-Each and every phase starts with the same prompt:
-
-> **Prompt:** *"Study .ralph/"*
-
-### Phase 1: Intent Engineering (The "Why")
-**Goal:** Build the Strategic Narrative and identify the business KPIs.
-> **Prompt:** *"Let's bootstrap a project for Nutanix-hosted Citrix VDI infrastructure optimization. The primary drivers are cost-optimization via automated curfews and improving user experience for StoreFront stability. We are migrating from VMware to Nutanix, and eventually to Azure. I'm the PO/Solution Architect of this project. Let's plan, design, discover and implement this capability. Interview me."*
-
-### Phase 2: Requirements Engineering (The "What")
-**Goal:** Deconstruct the Narrative into Atomic Functional and Non-Functional Requirements.
-> **Prompt:** *"Based our narrative let's build requirements. We need a 1-hour idle curfew logic, Geo 9-to-5 regional awareness, and a UUID diagnostic bridge for ServiceNow."*
-
-### Phase 3: Implementation & The Loop
-**Goal:** Execute the tasks while continuously refining the requirement "Atoms."
-> **Prompt:** *"Study .ralph/"*
+**What it captures:**
+- Functional Requirements (FRs) - What the system must do
+- Non-Functional Requirements (NFRs) - How the system must behave
+- Each requirement is atomic (non-decomposable) and measurable
 
 ---
 
-> "The LLM is the new virtual machine, your context is the stack of the VM. If the stack is garbage, the execution is garbage."
+### Phase 3: Task Generation (The "How")
+**Output:** `.ralph/prd.json`
+
+Transform requirements into a phased, prioritized task backlog.
+
+**What it captures:**
+- User stories with acceptance criteria
+- Task dependencies and priorities
+- Pass/fail status for each task
+- Branch name for isolation
+
+**Note:** Both CLAUDE.md and RALPH.md reference PRESALE.md for the discovery workflow. Start with interactive mode (CLAUDE.md) to conduct the initial interviews.
+
+---
+
+## 📋 Core Agent Files
+
+### [.ralph/RALPH.md](./.ralph/RALPH.md)
+**Unattended execution loop protocol** - Supplied to each agent in the loop via `ralph.sh`.
+
+**Purpose**: Defines the workflow for autonomous agents working in an unattended loop where each agent:
+- Reads PRD and picks ONE task
+- Implements and tests the task
+- Commits changes
+- Updates PRD and progress
+- **Exits immediately** (new agent spawned for next task)
+
+**Key Behavior**: Agent MUST exit after one task to drop context and start fresh.
+
+---
+
+### [.ralph/CLAUDE.md](./.ralph/CLAUDE.md)
+**Interactive discovery + execution workflow** - For human-supervised sessions.
+
+**Purpose**: Unified protocol covering both:
+- **Discovery Mode**: When PRD/NARRATIVE/REQUIREMENTS don't exist (conduct PRESALE interviews)
+- **Execution Mode**: When PRD exists with tasks (implement one task at a time)
+- **Completion Mode**: All tasks complete
+
+**Key Difference**: Allows multi-turn interaction, questions, and iterative refinement (vs. RALPH.md's "one task and exit").
+
+---
+
+### [.ralph/PRESALE.md](./.ralph/PRESALE.md)
+**Discovery interview methodology** - How to generate PRD from business context.
+
+**Purpose**: Defines the three-phase interview process:
+- **Phase 1**: Business Context Injection (capture "The Why") → produces `docs/NARRATIVE.md`
+- **Phase 2**: Requirements Engineering (atomic requirements) → produces `docs/REQUIREMENTS.md`
+- **Phase 3**: Generate PRD from approved requirements → produces `.ralph/prd.json`
+
+**When to use**: When starting a new project or major feature without existing PRD.
+
+---
+
+### [.ralph/prd.json](./.ralph/prd.json)
+**Product Requirements Document** - Current task backlog.
+
+**Structure**:
+```json
+{
+  "project_name": "...",
+  "branchName": "feature/branch-name",
+  "objective": "...",
+  "user_stories": [
+    {
+      "id": "FEAT-001",
+      "title": "...",
+      "passes": false,  // ← Agents pick tasks where passes=false
+      "priority": 1
+    }
+  ]
+}
+```
+
+**Agent workflow**:
+1. Read prd.json
+2. Find highest priority story where `passes: false`
+3. Implement that ONE story
+4. Update `passes: true`
+5. Exit
+
+---
+
+### [.ralph/progress.txt](./.ralph/progress.txt)
+**Execution history and learnings** - Accumulated context from all agent iterations.
+
+**Structure**:
+```markdown
+## Codebase Patterns
+- Pattern 1
+- Pattern 2
+
+---
+## [Date/Time] - [Story ID]
+Thread: https://ampcode.com/threads/...
+- What was implemented
+- Files changed
+- **Learnings for future iterations:**
+  - Pattern discovered
+  - Gotcha encountered
+---
+```
+
+**Purpose**: Preserve context across agent iterations (since each agent drops its memory).
+
+**Key Sections**:
+- `## Codebase Patterns` - Reusable patterns (read first!)
+- Per-task entries - What was done, what was learned
+
+---
+
+## 🔄 Agent Loop Architecture
+
+```
+┌─────────────────────────────────────────┐
+│  ralph.sh (Loop Orchestrator)           │
+│  - Spawns agent with fresh context      │
+│  - Supplies RALPH.md to each agent      │
+│  - Waits for agent exit                 │
+│  - Repeats until <promise>COMPLETE</promise> │
+└─────────────────────────────────────────┘
+                    ↓
+        ┌───────────────────────┐
+        │  Agent Process N       │
+        │  1. Read RALPH.md      │
+        │  2. Read prd.json      │
+        │  3. Pick ONE story     │
+        │  4. Implement          │
+        │  5. Test & Commit      │
+        │  6. Update docs        │
+        │  7. EXIT ← CRITICAL    │
+        └───────────────────────┘
+                    ↓
+        ┌───────────────────────┐
+        │  Agent Process N+1     │
+        │  (Fresh context)       │
+        │  Starts from step 1... │
+        └───────────────────────┘
+```
+
+**Key Principle**: Context is preserved in **files** (progress.txt, AGENTS.md, docs/), not in agent memory.
+
+---
+
+## 🎯 Quick Reference
+
+| Task                        | How to Execute                                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Start new project**       | Interactive mode → tell agent ```"Study .ralph/CLAUDE.md"``` - agent will detect missing narrative and prd |
+| **Interactive development** | Interactive mode → tell agent ```"Study .ralph/CLAUDE.md"``` - agent picks up and starts implementing      |
+| **Unattended execution**    | Run `.ralph/ralph.sh --tool claude [max_iterations]`                                                       |
+| **Track execution history** | Read/append to `.ralph/progress.txt`                                                                       |
+| **Find next task**          | Read `.ralph/prd.json`, find `passes: false`                                                               |
+| **Understand codebase**     | Read `.ralph/progress.txt` → "Codebase Patterns" section                                                   |
+
+---
+
+## 🏗️ Project Structure
+
+```
+README.md               # This file (methodology overview)
+
+.ralph/
+├── RALPH.md            # Unattended execution protocol
+├── CLAUDE.md           # Interactive execution protocol
+├── PRESALE.md          # Discovery interview workflow
+├── ralph.sh            # Loop orchestrator script
+├── prd.json            # Task backlog (generated)
+├── progress.txt        # Execution history (generated)
+└── AGENTS.md           # Agent-specific learnings (optional)
+
+docs/
+├── NARRATIVE.md        # Business context (generated from PRESALE)
+└── REQUIREMENTS.md     # Atomic requirements (generated from PRESALE)
+```
